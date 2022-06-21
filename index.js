@@ -1,14 +1,16 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const path = require("path");
+import express from "express";
+import mongoose from "mongoose";
+import path from "path";
+import Listen from "./mongoDB.js";
+
 const app = express();
-import Listen from "./mongoDB";
+
 const port = 8080;
+const __dirname = path.resolve();
 
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.static(path.join(__dirname, "../dajeong/build")));
-
-Listen();
+Listen;
 
 app.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "../dajeong/build/index.html"));
