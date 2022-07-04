@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import path from "path";
 import Post, { Postsrouter } from "./Model/Post.js";
+import { singleAlbumRouter } from "./Model/singleAlbum.js";
 import mongodbUrl from "./mongoDB.js";
 import uploadImage from "./multer.js";
 const port = 5000;
@@ -13,7 +14,9 @@ const __dirname = path.resolve();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../dajeong/build")));
+app.use("public/suri", express.static("./public/suri"));
 app.use("/posts", Postsrouter);
+app.use("/singleAlbum", singleAlbumRouter);
 //Listen;
 app.listen(port, () => {
 	mongoose
@@ -42,18 +45,13 @@ app.get("/express", (req, res) => {
 }); // url 과 req, res를 받는다.
 
 //body parser사용해야함
-app.post("/api/test", (req, res) => {
+app.post("/api/test", (req, ress) => {
 	const ContentPost = new Post({ title: "test", content: "테스트입니다." });
 	ContentPost.save().then(() => {
 		res.status(200).json({ success: true });
 	});
 	console.log(req.body);
 	res.send("요청 성공!!!");
-});
-app.post("/api/suri", uploadImage.single("bestSingleAlbum"), (req, res) => {
-	console.log(req.body);
-	console.log(req.file);
-	res.send("수리수리!");
 });
 
 app.post("/writingposts", (req, res) => {});
@@ -63,17 +61,17 @@ app.get("*", (req, res) => {
 }); // url 과 req, res를 받는다.
 //라우팅 규칙
 
-app.post("/test/uploadImages", uploadImage.single("content"), (req, res) => {
-	//해당 라우터가 정상동작 하면 public/upload에 이미지가 업로드된다.
-	//업로드 된 이미지의 URL경로를 프론트엔드로 반환한다.
-	console.log("전달받은 파일: ", req.file);
-	console.log("저장된 파일의 이름", req.file.filename);
+// app.post("/uploadImages", uploadImage.single("content"), (req, res) => {
+// 	//해당 라우터가 정상동작 하면 public/upload에 이미지가 업로드된다.
+// 	//업로드 된 이미지의 URL경로를 프론트엔드로 반환한다.
+// 	console.log("전달받은 파일: ", req.file);
+// 	console.log("저장된 파일의 이름", req.file.filename);
 
-	//파일이 저장된 경로를 클라이언트에게 반환해준다.
-	const IMG_URL = `http://localhost:5000/uploads/${req.file.filename}`;
-	console.log(IMG_URL);
-	res.json({ url: IMG_URL });
-});
+// 	//파일이 저장된 경로를 클라이언트에게 반환해준다.
+// 	const IMG_URL = `http://localhost:5000/uploads/${req.file.filename}`;
+// 	console.log(IMG_URL);
+// 	res.json({ url: IMG_URL });
+// });
 
 /*
 1. Post MongoDB Model

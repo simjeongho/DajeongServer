@@ -4,7 +4,7 @@ const uploadImage = multer({
 	storage: multer.diskStorage({
 		// 저장할 장소
 		destination(req, file, done) {
-			done(null, "public/suri");
+			done(null, "public/singleAlbum");
 		},
 		// 저장할 이미지의 파일명
 		filename(req, file, done) {
