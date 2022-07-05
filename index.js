@@ -1,22 +1,22 @@
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
-import Post, { Postsrouter } from "./Model/Post.js";
+import { Postsrouter } from "./Model/Post.js";
 import { singleAlbumRouter } from "./Model/singleAlbum.js";
 import mongodbUrl from "./mongoDB.js";
-import uploadImage from "./multer.js";
+
 const port = 5000;
 const app = express();
-
 const __dirname = path.resolve();
 
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "../dajeong/build")));
-app.use("public/suri", express.static("./public/suri"));
+app.use("/public/singleAlbum", express.static("./public/singleAlbum"));
 app.use("/posts", Postsrouter);
 app.use("/singleAlbum", singleAlbumRouter);
+
 //Listen;
 app.listen(port, () => {
 	mongoose
@@ -31,6 +31,9 @@ app.listen(port, () => {
 		});
 	console.log("app running");
 });
+app.all("/", function (req, res, next) {
+	next();
+});
 
 app.get("/", (req, res) => {
 	console.log("app running");
@@ -40,21 +43,7 @@ app.get("/", (req, res) => {
 //sendFile의 경우 파일 위치로 현재 server폴더이 위치 + 참조할 파일 위치를 적어줘야한다.
 //현재 경로 + 상대 경로 합쳐주는 라이브러리 path
 
-app.get("/express", (req, res) => {
-	res.send("Hello Express!");
-}); // url 과 req, res를 받는다.
-
 //body parser사용해야함
-app.post("/api/test", (req, ress) => {
-	const ContentPost = new Post({ title: "test", content: "테스트입니다." });
-	ContentPost.save().then(() => {
-		res.status(200).json({ success: true });
-	});
-	console.log(req.body);
-	res.send("요청 성공!!!");
-});
-
-app.post("/writingposts", (req, res) => {});
 
 app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../dajeong/build/index.html"));
