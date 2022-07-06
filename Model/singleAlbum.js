@@ -59,4 +59,19 @@ singleAlbumRouter.get("/getList", (req, res, next) => {
 		});
 });
 
+singleAlbumRouter.get("/getDetail/:postNum", (req, res, next) => {
+	console.log(req);
+	SingleAlbum.findOne({ postNum: Number(req.params.postNum) })
+		.exec()
+		.then((doc) => {
+			console.log(doc);
+			res.setHeader("Access-Control-Allow-Origin", "*");
+			res.setHeader("X-Content-Type-Options", "nosniff");
+			res.status(200).json({ success: true, singleAlbumDetail: doc });
+		})
+		.catch((err) => {
+			res.status(400).json({ success: false });
+		});
+});
+
 export default SingleAlbum;
