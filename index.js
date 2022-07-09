@@ -1,8 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";
-import { Postsrouter } from "./Model/Post.js";
-import { singleAlbumRouter } from "./Model/singleAlbum.js";
+import { Postsrouter } from "./routes/Post.js";
+import { singleAlbumRouter } from "./routes/singleAlbum.js";
 import mongodbUrl from "./mongoDB.js";
 
 const port = 5000;
@@ -31,10 +31,6 @@ app.listen(port, () => {
 		});
 	console.log("app running");
 });
-app.all("/", function (req, res, next) {
-	next();
-});
-
 app.get("/", (req, res) => {
 	console.log("app running");
 	res.send("Hello world");
