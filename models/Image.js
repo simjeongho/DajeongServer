@@ -1,4 +1,4 @@
-export default (sequelize, DataTypes) => {
+const Image = (sequelize, DataTypes) => {
 	const Image = sequelize.define(
 		"Image",
 		{
@@ -18,3 +18,5 @@ export default (sequelize, DataTypes) => {
 	};
 	return Image;
 };
+
+export default Image;

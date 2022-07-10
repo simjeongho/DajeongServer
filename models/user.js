@@ -1,4 +1,4 @@
-export default (sequelize, DataTypes) => {
+const User = (sequelize, DataTypes) => {
 	const User = sequelize.define(
 		"User",
 		{
@@ -24,6 +24,12 @@ export default (sequelize, DataTypes) => {
 	);
 	User.associate = (db) => {
 		db.User.hasMany(db.Post);
+		db.User.hasMany(db.Comment);
+		db.User.belongsToMany(db.Post, { through: "Like", as: "Liked" });
+		db.User.belongsToMany(db.User, { through: "Follow", as: "Followers", foreignKey: "followingId" });
+		db.User.belongsToMany(db.User, { through: "Follow", as: "Followings", foreignKey: "followerId" });
 	};
 	return User;
 };
+
+export default User;

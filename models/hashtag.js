@@ -1,4 +1,4 @@
-export default (sequelize, DataTypes) => {
+const Hashtag = (sequelize, DataTypes) => {
 	const Hashtag = sequelize.define(
 		"Hashtag",
 		{
@@ -14,7 +14,9 @@ export default (sequelize, DataTypes) => {
 		},
 	);
 	Hashtag.associate = (db) => {
-		db.Hashtag.belongsToMany(db.Hashtag);
+		db.Hashtag.belongsToMany(db.Post, { through: "PostHashtag" });
 	};
 	return Hashtag;
 };
+
+export default Hashtag;

@@ -1,4 +1,4 @@
-export default (sequelize, DataTypes) => {
+const Comment = (sequelize, DataTypes) => {
 	const Comment = sequelize.define(
 		"Comment",
 		{
@@ -19,3 +19,5 @@ export default (sequelize, DataTypes) => {
 	};
 	return Comment;
 };
+
+export default Comment;

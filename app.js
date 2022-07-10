@@ -4,7 +4,7 @@ import path from "path";
 import { Postsrouter } from "./routes/Post.js";
 import { singleAlbumRouter } from "./routes/singleAlbum.js";
 import mongodbUrl from "./mongoDB.js";
-
+import db from "./models/index.js";
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
@@ -17,6 +17,14 @@ app.use("/public/singleAlbum", express.static("./public/singleAlbum"));
 app.use("/posts", Postsrouter);
 app.use("/singleAlbum", singleAlbumRouter);
 
+db.sequelize
+	.sync()
+	.then(() => {
+		console.log("sql connected");
+	})
+	.catch((err) => {
+		console.log(err);
+	});
 //Listen;
 app.listen(port, () => {
 	mongoose
