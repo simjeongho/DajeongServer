@@ -1,5 +1,5 @@
 import Sequelize from "sequelize";
-import Config from "../config/config.json";
+import Config from "../config/config.js";
 import Comment from "./comment.js";
 import Hashtag from "./hashtag.js";
 import Image from "./image.js";

@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import express from "express";
 import uploadImage from "../multer.js";
 import Counter from "./counter.js";
-import cors from "cors";
 export const singleAlbumRouter = express.Router();
 const singleAlbumSchema = new mongoose.Schema({
 	title: String,
@@ -13,8 +12,8 @@ const singleAlbumSchema = new mongoose.Schema({
 
 const SingleAlbum = mongoose.model("singleAlbum", singleAlbumSchema);
 
-singleAlbumRouter.post("/uploadSingleAlbumPost", cors(), uploadImage.single("singleImage"), (req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*");
+singleAlbumRouter.post("/uploadSingleAlbumPost", uploadImage.single("singleImage"), (req, res, next) => {
+	res.header("Access-Control-Allow-Origin", "http://localhost:3001");
 	if (next) {
 		const imageUrl = "http://localhost:5000/public/singleAlbum";
 		const body = req.body;
@@ -50,7 +49,7 @@ singleAlbumRouter.get("/getList", (req, res, next) => {
 	SingleAlbum.find()
 		.exec()
 		.then((doc) => {
-			res.setHeader("Access-Control-Allow-Origin", "*");
+			res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
 			res.setHeader("X-Content-Type-Options", "nosniff");
 			res.status(200).json({ success: true, singleAlbumList: doc });
 		})
@@ -65,7 +64,7 @@ singleAlbumRouter.get("/getDetail/:postNum", (req, res, next) => {
 		.exec()
 		.then((doc) => {
 			console.log(doc);
-			res.setHeader("Access-Control-Allow-Origin", "*");
+			res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001");
 			res.setHeader("X-Content-Type-Options", "nosniff");
 			res.status(200).json({ success: true, singleAlbumDetail: doc });
 		})
