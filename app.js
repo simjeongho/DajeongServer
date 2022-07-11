@@ -8,15 +8,30 @@ import db from "./models/index.js";
 import { userRouter } from "./routes/user.js";
 import passportConfig from "./passport/index.js";
 import cors from "cors";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import passport from "passport";
+import secretKey from "./secretKey.js";
+import dotenv from "dotenv";
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
+dotenv.config();
 const Options = {
 	origin: "http://localhost:3001",
 	Credential: false,
 };
 app.use(cors(Options));
-
+app.use(
+	session({
+		saveUninitialized: false,
+		resave: false,
+		secret: process.env.COOKIE_SECRET,
+	}),
+);
+app.use(cookieParser(secretKey));
+app.use(passport.initialize());
+app.use(passport.session());
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

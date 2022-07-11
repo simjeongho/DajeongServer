@@ -1,5 +1,4 @@
 import passport from "passport";
-import Config from "../config/config.json";
 import { Strategy as LocalStrategy } from "passport-local";
 import Sequelize from "sequelize";
 import db from "../models/index.js";

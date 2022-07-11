@@ -1,10 +1,22 @@
 import passport from "passport";
 import local from "./local.js";
+import db from "../models/index.js";
 
+const User = db.User;
 const passportConfig = () => {
-	passport.serializeUser(() => {});
+	passport.serializeUser((user, done) => {
+		done(null, user.id);
+	});
 
-	passport.deserializeUser(() => {});
+	passport.deserializeUser(async (id, done) => {
+		try {
+			const user = await User.findOne({ where: id });
+			done(null, user);
+		} catch (error) {
+			console.error(error);
+			done(error);
+		}
+	});
 
 	local();
 };

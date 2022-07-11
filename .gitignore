@@ -25,5 +25,7 @@ yarn-error.log*
 *.jpg
 *.png
 *.svg
+.env
+secretKey.js
 
 config.json
