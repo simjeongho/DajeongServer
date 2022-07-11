@@ -5,6 +5,8 @@ import { Postsrouter } from "./routes/Post.js";
 import { singleAlbumRouter } from "./routes/singleAlbum.js";
 import mongodbUrl from "./mongoDB.js";
 import db from "./models/index.js";
+import { userRouter } from "./routes/user.js";
+import passportConfig from "./passport/index.js";
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
@@ -16,6 +18,8 @@ app.use(express.static(path.join(__dirname, "../dajeong/build")));
 app.use("/public/singleAlbum", express.static("./public/singleAlbum"));
 app.use("/posts", Postsrouter);
 app.use("/singleAlbum", singleAlbumRouter);
+app.use("/user", userRouter);
+passportConfig();
 
 db.sequelize
 	.sync()
@@ -54,6 +58,7 @@ app.get("*", (req, res) => {
 }); // url 과 req, res를 받는다.
 //라우팅 규칙
 
+app.post("/login", (req, res, next) => {});
 // app.post("/uploadImages", uploadImage.single("content"), (req, res) => {
 // 	//해당 라우터가 정상동작 하면 public/upload에 이미지가 업로드된다.
 // 	//업로드 된 이미지의 URL경로를 프론트엔드로 반환한다.
