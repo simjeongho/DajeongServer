@@ -7,9 +7,15 @@ import mongodbUrl from "./mongoDB.js";
 import db from "./models/index.js";
 import { userRouter } from "./routes/user.js";
 import passportConfig from "./passport/index.js";
+import cors from "cors";
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
+const Options = {
+	origin: "http://localhost:3001",
+	Credential: false,
+};
+app.use(cors(Options));
 
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.json());
@@ -57,8 +63,6 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "../dajeong/build/index.html"));
 }); // url 과 req, res를 받는다.
 //라우팅 규칙
-
-app.post("/login", (req, res, next) => {});
 // app.post("/uploadImages", uploadImage.single("content"), (req, res) => {
 // 	//해당 라우터가 정상동작 하면 public/upload에 이미지가 업로드된다.
 // 	//업로드 된 이미지의 URL경로를 프론트엔드로 반환한다.
