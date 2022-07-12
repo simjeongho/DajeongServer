@@ -1,24 +1,24 @@
-import express from "express";
-import mongoose from "mongoose";
-import path from "path";
-import { Postsrouter } from "./routes/Post.js";
-import { singleAlbumRouter } from "./routes/singleAlbum.js";
-import mongodbUrl from "./mongoDB.js";
-import db from "./models/index.js";
-import { userRouter } from "./routes/user.js";
-import passportConfig from "./passport/index.js";
-import cors from "cors";
-import session from "express-session";
-import cookieParser from "cookie-parser";
-import passport from "passport";
-import secretKey from "./secretKey.js";
-import dotenv from "dotenv";
+import express from 'express';
+import mongoose from 'mongoose';
+import path from 'path';
+import { Postsrouter } from './routes/Post.js';
+import { singleAlbumRouter } from './routes/singleAlbum.js';
+import mongodbUrl from './mongoDB.js';
+import db from './models/index.js';
+import { userRouter } from './routes/user.js';
+import passportConfig from './passport/index.js';
+import cors from 'cors';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import secretKey from './secretKey.js';
+import dotenv from 'dotenv';
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
 dotenv.config();
 const Options = {
-	origin: "http://localhost:3001",
+	origin: 'http://localhost:3001',
 	Credential: false,
 };
 app.use(cors(Options));
@@ -35,17 +35,17 @@ app.use(passport.session());
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "../dajeong/build")));
-app.use("/public/singleAlbum", express.static("./public/singleAlbum"));
-app.use("/posts", Postsrouter);
-app.use("/singleAlbum", singleAlbumRouter);
-app.use("/user", userRouter);
+app.use(express.static(path.join(__dirname, '../dajeong/build')));
+app.use('/public/singleAlbum', express.static('./public/singleAlbum'));
+app.use('/posts', Postsrouter);
+app.use('/singleAlbum', singleAlbumRouter);
+app.use('/user', userRouter);
 passportConfig();
 
 db.sequelize
 	.sync()
 	.then(() => {
-		console.log("sql connected");
+		console.log('sql connected');
 	})
 	.catch((err) => {
 		console.log(err);
@@ -59,14 +59,14 @@ app.listen(port, () => {
 			console.log(`connecting MongoDB`);
 		})
 		.catch((err) => {
-			console.log("Error!");
+			console.log('Error!');
 			console.log(`${err}`);
 		});
-	console.log("app running");
+	console.log('app running');
 });
-app.get("/", (req, res) => {
-	console.log("app running");
-	res.send("Hello world");
+app.get('/', (req, res) => {
+	console.log('app running');
+	res.send('Hello world');
 	//res.sendFile(path.join(__dirname, "../dajeong/build/index.html"));
 }); // url 과 req, res를 받는다.
 //sendFile의 경우 파일 위치로 현재 server폴더이 위치 + 참조할 파일 위치를 적어줘야한다.
@@ -74,8 +74,8 @@ app.get("/", (req, res) => {
 
 //body parser사용해야함
 
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "../dajeong/build/index.html"));
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, '../dajeong/build/index.html'));
 }); // url 과 req, res를 받는다.
 //라우팅 규칙
 // app.post("/uploadImages", uploadImage.single("content"), (req, res) => {

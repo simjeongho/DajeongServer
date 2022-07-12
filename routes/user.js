@@ -2,10 +2,11 @@ import express from 'express';
 import next from 'next';
 import passport from 'passport';
 import db from '../models/index.js';
+import { isNotLoggedIn, isLoggedIn } from '../routes/middlewares.js';
 export const userRouter = express.Router();
 
 const User = db.User;
-userRouter.post('/login', (req, res, next) => {
+userRouter.post('/login', isNotLoggedIn, (req, res, next) => {
 	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	console.log(req);
 	passport.authenticate('local', (err, user, info) => {
@@ -40,7 +41,7 @@ userRouter.post('/login', (req, res, next) => {
 	})(req, res, next);
 });
 
-userRouter.post('/logout', (req, res) => {
+userRouter.post('/logout', isLoggedIn, (req, res) => {
 	req.logout(function (err) {
 		if (err) {
 			return next(err);
