@@ -7,7 +7,6 @@ export const userRouter = express.Router();
 
 const User = db.User;
 userRouter.post('/login', isNotLoggedIn, (req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
 	console.log(req);
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
@@ -36,6 +35,7 @@ userRouter.post('/login', isNotLoggedIn, (req, res, next) => {
 					},
 				],
 			});
+			console.log('authenticated', req.isAuthenticated());
 			return res.status(200).json(fullUserWithoutPassword);
 		});
 	})(req, res, next);
@@ -46,6 +46,7 @@ userRouter.post('/logout', isLoggedIn, (req, res) => {
 		if (err) {
 			return next(err);
 		}
+		console.log(req.body);
 		req.session.destroy();
 	});
 	res.send('logout Success');

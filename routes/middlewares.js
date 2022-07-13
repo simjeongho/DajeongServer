@@ -1,4 +1,5 @@
-const isLoggedIn = (req, res, next) => {
+export const isLoggedIn = (req, res, next) => {
+	console.log('authenticated', req.isAuthenticated());
 	if (req.isAuthenticated()) {
 		next();
 	} else {
@@ -6,12 +7,11 @@ const isLoggedIn = (req, res, next) => {
 	}
 };
 
-const isNotLoggedIn = (req, res, next) => {
+export const isNotLoggedIn = (req, res, next) => {
+	console.log('authenticated', req.isAuthenticated());
 	if (!req.isAuthenticated()) {
 		next();
 	} else {
 		res.status(401).send('로그인하지 않은 사용자만 가능합니다.');
 	}
 };
-
-export { isLoggedIn, isNotLoggedIn };
