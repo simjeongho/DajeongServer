@@ -22,7 +22,6 @@ const PassportStrategy = () => {
 						done(null, false, { reason: '존재하지 않는 사용자 입니다.' });
 					}
 					if (password === user.dataValues.password) {
-						console.log('done!');
 						return done(null, user);
 					} else {
 						return done(null, false, { reason: '비밀번호가 틀렸습니다.' });

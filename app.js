@@ -11,20 +11,28 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
-import secretKey from './secretKey.js';
 import dotenv from 'dotenv';
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
-app.use(passport.initialize());
+const front = 'http://localhost:3000';
+
 dotenv.config();
+passportConfig();
 const Options = {
-	origin: 'http://localhost:3001',
+	origin: `${front}`,
 	credentials: true, // 쿠키 전달
 };
+app.use(
+	cors({
+		origin: true,
+		credentials: true,
+	}),
+);
 app.use(cors(Options));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.set('trust proxy', 1);
 app.use(
 	session({
 		saveUninitialized: false,
@@ -36,8 +44,9 @@ app.use(
 		},
 	}),
 );
-
+app.use(passport.initialize());
 app.use(passport.session());
+
 //express에서 static으로 활용할 폴더를 알려준다.
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,7 +55,6 @@ app.use('/public/singleAlbum', express.static('./public/singleAlbum'));
 app.use('/posts', Postsrouter);
 app.use('/singleAlbum', singleAlbumRouter);
 app.use('/user', userRouter);
-passportConfig();
 
 db.sequelize
 	.sync()

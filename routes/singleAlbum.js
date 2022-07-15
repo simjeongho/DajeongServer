@@ -13,8 +13,9 @@ const singleAlbumSchema = new mongoose.Schema({
 
 const SingleAlbum = mongoose.model('singleAlbum', singleAlbumSchema);
 
-singleAlbumRouter.post('/uploadSingleAlbumPost', uploadImage.single('singleImage'), (req, res, next) => {
+singleAlbumRouter.post('/uploadSingleAlbumPost', uploadImage.single('singleImage'), isLoggedIn, (req, res, next) => {
 	if (next) {
+		res.setHeader('Set-Cookie', 'myCookie:mycookie');
 		const imageUrl = 'http://localhost:5000/public/singleAlbum';
 		const body = req.body;
 		Counter.findOne({ name: 'counter' })
@@ -45,7 +46,7 @@ singleAlbumRouter.post('/uploadSingleAlbumPost', uploadImage.single('singleImage
 	}
 });
 
-singleAlbumRouter.get('/getList', (req, res, next) => {
+singleAlbumRouter.get('/getList', isLoggedIn, (req, res, next) => {
 	SingleAlbum.find()
 		.exec()
 		.then((doc) => {
@@ -57,7 +58,7 @@ singleAlbumRouter.get('/getList', (req, res, next) => {
 		});
 });
 
-singleAlbumRouter.get('/getDetail/:postNum', (req, res, next) => {
+singleAlbumRouter.get('/getDetail/:postNum', isLoggedIn, (req, res, next) => {
 	console.log(req);
 	SingleAlbum.findOne({ postNum: Number(req.params.postNum) })
 		.exec()

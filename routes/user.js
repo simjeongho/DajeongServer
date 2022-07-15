@@ -6,7 +6,7 @@ import { isNotLoggedIn, isLoggedIn } from '../routes/middlewares.js';
 export const userRouter = express.Router();
 
 const User = db.User;
-userRouter.post('/login', isNotLoggedIn, (req, res, next) => {
+userRouter.post('/login', (req, res, next) => {
 	console.log(req);
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
