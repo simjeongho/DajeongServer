@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import path from 'path';
 import { Postsrouter } from './routes/Post.js';
 import { singleAlbumRouter } from './routes/singleAlbum.js';
-import mongodbUrl from './mongoDB.js';
+import mongodbUrl from './password.js';
 import db from './models/index.js';
 import { userRouter } from './routes/user.js';
 import passportConfig from './passport/index.js';
@@ -12,6 +12,7 @@ import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import dotenv from 'dotenv';
+import { multiAlbumRouter } from './routes/multiAlbum.js';
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
@@ -55,6 +56,7 @@ app.use('/public/singleAlbum', express.static('./public/singleAlbum'));
 app.use('/posts', Postsrouter);
 app.use('/singleAlbum', singleAlbumRouter);
 app.use('/user', userRouter);
+app.use('/multiAlbum', multiAlbumRouter);
 
 db.sequelize
 	.sync()

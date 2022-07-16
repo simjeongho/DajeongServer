@@ -27,5 +27,5 @@ yarn-error.log*
 *.svg
 .env
 secretKey.js
-
+password.js
 config.json
