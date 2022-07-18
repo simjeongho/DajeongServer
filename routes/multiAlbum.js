@@ -4,14 +4,35 @@ import { uploadS3 } from '../multer.js';
 import db from '../models/index.js';
 export const multiAlbumRouter = express.Router();
 
+multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
+	console.log(req);
+	try {
+		const postList = await db.Post.findAll({
+			limit: 9,
+			odder: ['createdAt', 'DESC'],
+			include: [
+				{
+					model: db.Image,
+					attributes: ['src', 'PostId'],
+				},
+				{
+					model: db.User,
+					attributes: ['nickname'],
+				},
+			],
+		});
+		res.status(200).json(postList);
+	} catch (err) {
+		console.log(err);
+	}
+});
+
 multiAlbumRouter.post('/uploadMultiAlbumImage', isLoggedIn, uploadS3.array('multiImage'), async (req, res) => {
 	console.log('multiupload', req.files);
-	const date = new Date();
 	res.json(req.files.map((y) => y.location)); // 파일 명 리턴
 	console.log('req body다 ', req.body);
 	console.log('req.body.content', req.body.content);
 	//리사이징
-
 	//포스트 아이디 가져와서 보내주기
 	// 이미지 주소 저장하기
 });
