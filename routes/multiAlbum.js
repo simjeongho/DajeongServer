@@ -21,7 +21,10 @@ multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
 				},
 			],
 		});
-		res.status(200).json(postList);
+		const multiAlbum = {
+			multiAlbumList: postList,
+		};
+		res.status(200).json(multiAlbum);
 	} catch (err) {
 		console.log(err);
 	}
