@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import { multiAlbumRouter } from './routes/multiAlbum.js';
+import commentRouter from './routes/comments.js';
 const port = 5000;
 const app = express();
 const __dirname = path.resolve();
@@ -57,7 +58,7 @@ app.use('/posts', Postsrouter);
 app.use('/singleAlbum', singleAlbumRouter);
 app.use('/user', userRouter);
 app.use('/multiAlbum', multiAlbumRouter);
-
+app.use('/comment', commentRouter);
 db.sequelize
 	.sync()
 	.then(() => {
