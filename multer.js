@@ -36,4 +36,15 @@ export const uploadS3 = multer({
 	}),
 	limits: { fileSize: 20 * 1024 * 1024 },
 });
+
+export const uploadS3Profile = multer({
+	storage: multerS3({
+		s3: new AWS.S3(),
+		bucket: 'simbwatda',
+		key(req, file, cb) {
+			cb(null, `profile/${Date.now()}_${path.basename(file.originalname)}`);
+		},
+	}),
+	limits: { fileSize: 20 * 1024 * 1024 },
+});
 export default uploadImage;
