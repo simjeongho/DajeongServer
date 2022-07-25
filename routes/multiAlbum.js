@@ -42,7 +42,7 @@ multiAlbumRouter.get('/getDetail/:id', isLoggedIn, async (req, res) => {
 				},
 				{
 					model: db.Comment,
-					attributes: ['PostId', 'UserId', 'content', 'createdAt'],
+					attributes: ['UserId', 'content', 'createdAt'],
 				},
 				{
 					model: db.User,
