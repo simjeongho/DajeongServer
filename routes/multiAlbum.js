@@ -9,7 +9,7 @@ multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
 	try {
 		const postList = await db.Post.findAll({
 			limit: 9,
-			odder: ['createdAt', 'DESC'],
+			order: [['id', 'DESC']],
 			include: [
 				{
 					model: db.Image,
@@ -25,6 +25,35 @@ multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
 			multiAlbumList: postList,
 		};
 		res.status(200).json(multiAlbum);
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+multiAlbumRouter.get('/getDetail/:id', isLoggedIn, async (req, res) => {
+	console.log(req);
+	try {
+		const FullPost = await db.Post.findOne({
+			where: { id: Number(req.params.id) },
+			include: [
+				{
+					model: db.Image,
+					attributes: ['src', 'PostId'],
+				},
+				{
+					model: db.Comment,
+					attributes: ['PostId', 'UserId', 'content', 'createdAt'],
+				},
+				{
+					model: db.User,
+					attributes: ['nickname'],
+				},
+			],
+		});
+		const fullPost = {
+			multiAlbumDetail: FullPost,
+		};
+		res.status(200).json(fullPost);
 	} catch (err) {
 		console.log(err);
 	}

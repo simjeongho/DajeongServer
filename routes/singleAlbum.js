@@ -13,17 +13,14 @@ const singleAlbumSchema = new mongoose.Schema({
 
 const SingleAlbum = mongoose.model('singleAlbum', singleAlbumSchema);
 
-singleAlbumRouter.post('/uploadSingleAlbumPost', uploadImage.single('singleImage'), isLoggedIn, (req, res, next) => {
+singleAlbumRouter.post('/uploadSingleAlbumPost', isLoggedIn, uploadImage.single('singleImage'), (req, res, next) => {
 	if (next) {
-		res.setHeader('Set-Cookie', 'myCookie:mycookie');
 		const imageUrl = 'http://localhost:5000/public/singleAlbum';
 		const body = req.body;
 		Counter.findOne({ name: 'counter' })
 			.exec()
 			.then((counter) => {
 				body.postNum = counter.postNum;
-				console.log(body);
-				console.log(req.file);
 
 				const singleAlbum = new SingleAlbum({ ...body, filePath: res.req.file.path });
 				singleAlbum

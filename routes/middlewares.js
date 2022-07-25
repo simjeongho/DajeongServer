@@ -1,5 +1,4 @@
 export const isLoggedIn = (req, res, next) => {
-	console.log('authenticated', req.isAuthenticated());
 	if (req.isAuthenticated()) {
 		next();
 	} else {
@@ -8,7 +7,6 @@ export const isLoggedIn = (req, res, next) => {
 };
 
 export const isNotLoggedIn = (req, res, next) => {
-	console.log('authenticated', req.isAuthenticated());
 	if (!req.isAuthenticated()) {
 		next();
 	} else {

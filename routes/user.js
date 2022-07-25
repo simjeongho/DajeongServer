@@ -22,7 +22,6 @@ userRouter.get('/', async (req, res, next) => {
 	}
 });
 userRouter.post('/login', (req, res, next) => {
-	console.log(req);
 	passport.authenticate('local', (err, user, info) => {
 		if (err) {
 			console.error(err);
@@ -50,7 +49,6 @@ userRouter.post('/login', (req, res, next) => {
 					},
 				],
 			});
-			console.log('authenticated', req.isAuthenticated());
 			return res.status(200).json(fullUserWithoutPassword);
 		});
 	})(req, res, next);

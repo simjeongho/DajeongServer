@@ -11,7 +11,7 @@ const passportConfig = () => {
 	passport.deserializeUser(async (id, done) => {
 		try {
 			const user = await User.findOne({ where: { id } });
-			console.log('deserialize!', user);
+
 			done(null, user);
 		} catch (error) {
 			console.error(error);

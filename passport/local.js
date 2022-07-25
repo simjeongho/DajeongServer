@@ -1,6 +1,5 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import Sequelize from 'sequelize';
 import db from '../models/index.js';
 const env = process.env.NODE_ENV || 'development';
 
@@ -17,7 +16,7 @@ const PassportStrategy = () => {
 					const user = await User.findOne({
 						where: { email },
 					});
-					console.log(user);
+
 					if (!user) {
 						done(null, false, { reason: '존재하지 않는 사용자 입니다.' });
 					}
