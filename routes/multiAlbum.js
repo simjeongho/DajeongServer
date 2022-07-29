@@ -17,7 +17,7 @@ multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
 				},
 				{
 					model: db.User,
-					attributes: ['nickname'],
+					attributes: ['nickname', 'profileImage'],
 				},
 			],
 		});
@@ -46,7 +46,7 @@ multiAlbumRouter.get('/getDetail/:id', isLoggedIn, async (req, res) => {
 				},
 				{
 					model: db.User,
-					attributes: ['nickname'],
+					attributes: ['nickname', 'profileImage'],
 				},
 			],
 		});
