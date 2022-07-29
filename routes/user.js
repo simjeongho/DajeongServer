@@ -2,6 +2,7 @@ import express from 'express';
 import next from 'next';
 import passport from 'passport';
 import db from '../models/index.js';
+import { uploadS3Profile } from '../multer.js';
 import { isNotLoggedIn, isLoggedIn } from '../routes/middlewares.js';
 export const userRouter = express.Router();
 
@@ -63,6 +64,40 @@ userRouter.post('/logout', isLoggedIn, (req, res) => {
 		req.session.destroy();
 	});
 	res.send('logout Success');
+});
+
+userRouter.post('/Description', isLoggedIn, async (req, res) => {
+	console.log(req);
+	try {
+		await User.update(
+			{
+				profileDescription: req.body.profileDescription,
+			},
+			{ where: { id: req.body.userId } },
+		);
+		res.status(200).json({ userDescriptionUploadSuccess: true });
+	} catch (err) {
+		console.log(err);
+		res.status(401).json({ userDescriptionUploadSuccess: false });
+	}
+});
+
+userRouter.post('/profileImage', isLoggedIn, uploadS3Profile.single('profileImage'), async (req, res) => {
+	console.log(req.file);
+
+	res.json(req.file.location);
+	try {
+		await User.update(
+			{
+				profileImage: req.file.location,
+			},
+			{ where: { id: req.body.userId } },
+		);
+		res.status(200).json({ userProfileImageUploadSuccess: true });
+	} catch (err) {
+		console.log(err);
+		res.status(401).json({ userProfileImageUploadSuccess: false });
+	}
 });
 
 export default userRouter;
