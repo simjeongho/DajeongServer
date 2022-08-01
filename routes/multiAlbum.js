@@ -2,9 +2,11 @@ import express from 'express';
 import { isLoggedIn } from './middlewares.js';
 import { uploadS3 } from '../multer.js';
 import db from '../models/index.js';
+import sequelize from 'sequelize';
+import { read } from 'fs';
 export const multiAlbumRouter = express.Router();
 
-multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
+multiAlbumRouter.get('/getList', async (req, res) => {
 	console.log(req);
 	try {
 		const postList = await db.Post.findAll({
@@ -30,7 +32,45 @@ multiAlbumRouter.get('/getList', isLoggedIn, async (req, res) => {
 	}
 });
 
-multiAlbumRouter.get('/getDetail/:id', isLoggedIn, async (req, res) => {
+multiAlbumRouter.get('/getAllList', async (req, res) => {
+	console.log(req);
+	let offset = req.query.offset;
+	let limit = req.query.limit;
+	console.log('req.query는', req.query.limit);
+	console.log('req.path는', req.baseUrl + req.url);
+	const count = await db.Post.count();
+	try {
+		const postList = await db.Post.findAll({
+			order: [['id', 'DESC']],
+			offset: Number(offset),
+			limit: Number(limit),
+			//attributes: { include: [[sequelize.fn('COUNT', 'id'), 'totalPost']] },
+			include: [
+				{
+					model: db.Image,
+					attributes: ['src', 'PostId'],
+				},
+				{
+					model: db.User,
+					attributes: ['nickname', 'profileImage'],
+				},
+			],
+		});
+		const multiAlbum = {
+			multiAlbumList: postList,
+			hasMore: Number(offset) + Number(limit) < count ? true : false,
+			next: req.baseUrl + req.url,
+			limit: limit,
+			offset: offset,
+			count: count,
+		};
+		res.status(200).json(multiAlbum);
+	} catch (err) {
+		console.log(err);
+	}
+});
+
+multiAlbumRouter.get('/:id', isLoggedIn, async (req, res) => {
 	console.log(req);
 	try {
 		const FullPost = await db.Post.findOne({
