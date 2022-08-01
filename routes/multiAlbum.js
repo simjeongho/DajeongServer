@@ -61,7 +61,7 @@ multiAlbumRouter.get('/getAllList', async (req, res) => {
 			hasMore: Number(offset) + Number(limit) < count ? true : false,
 			next: req.baseUrl + req.url,
 			limit: limit,
-			offset: offset,
+			nextOffset: Number(offset) + Number(limit),
 			count: count,
 		};
 		res.status(200).json(multiAlbum);
