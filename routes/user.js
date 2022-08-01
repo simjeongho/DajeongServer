@@ -66,8 +66,26 @@ userRouter.post('/logout', isLoggedIn, (req, res) => {
 	res.send('logout Success');
 });
 
-userRouter.post('/Description', isLoggedIn, async (req, res) => {
-	console.log(req);
+userRouter.get('/profile/:id', isLoggedIn, async (req, res, next) => {
+	try {
+		if (req) {
+			const user = await User.findOne({
+				where: { id: req.params.id },
+				attributes: {
+					exclude: ['password'],
+				},
+			});
+			res.status(200).json(user);
+		} else {
+			res.status(200).json(null);
+		}
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+});
+userRouter.post('/description', isLoggedIn, async (req, res) => {
+	console.log('description', req.body);
 	try {
 		await User.update(
 			{
@@ -79,6 +97,22 @@ userRouter.post('/Description', isLoggedIn, async (req, res) => {
 	} catch (err) {
 		console.log(err);
 		res.status(401).json({ userDescriptionUploadSuccess: false });
+	}
+});
+
+userRouter.post('/nickname', isLoggedIn, async (req, res) => {
+	console.log('nickname', req.body);
+	try {
+		await User.update(
+			{
+				nickname: req.body.newNickName,
+			},
+			{ where: { id: req.body.userId } },
+		);
+		res.status(200).json({ userNicknameUploadSuccess: true });
+	} catch (err) {
+		console.log(err);
+		res.status(401).json({ userNicknameUploadSuccess: false });
 	}
 });
 
