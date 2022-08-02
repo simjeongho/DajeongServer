@@ -3,7 +3,6 @@ import { isLoggedIn } from './middlewares.js';
 import { uploadS3 } from '../multer.js';
 import db from '../models/index.js';
 import sequelize from 'sequelize';
-import { read } from 'fs';
 export const multiAlbumRouter = express.Router();
 
 multiAlbumRouter.get('/getList', async (req, res) => {
@@ -91,7 +90,7 @@ multiAlbumRouter.get('/:id', isLoggedIn, async (req, res) => {
 				{
 					model: db.User,
 					as: 'Likers',
-					attributes: ['id'],
+					attributes: ['id', 'nickname', 'profileImage'],
 				},
 			],
 		});
@@ -142,12 +141,66 @@ multiAlbumRouter.post('/uploadMultiAlbumContent', isLoggedIn, async (req, res, n
 		console.log(err);
 	}
 });
+multiAlbumRouter.get('/:postId/liked', async (req, res, next) => {
+	// 포스트마다 좋아요 누른 사람
+	try {
+		const postLikers = await db.Post.findOne({
+			where: { id: req.params.postId },
+			include: [
+				{
+					model: db.User,
+					as: 'Likers',
+				},
+			],
+		});
+		if (!postLikers) {
+			return res.status(403).send('게시글이 존재하지 않습니다.');
+		}
+		res.json(postLikers);
+		//res.json(user);
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+});
+multiAlbumRouter.get('/:userId/likes', async (req, res, next) => {
+	// 유저가 좋아요 누른 포스트
+	try {
+		const user = await db.User.findOne({
+			where: { id: Number(req.params.userId) },
+			include: [
+				{
+					model: db.Post,
+					as: 'Liked',
+					attributes: ['id', 'title', 'content', 'UserId'],
+					include: [
+						{
+							model: db.Image,
+						},
+					],
+				},
+			],
+		});
+		console.log('user', req.params.userId);
+		//const userLike = await user.getLiked();
+		if (!user) {
+			return res.status(403).send('유저가 존재하지 않습니다.');
+		}
+		res.json(user);
+		//res.json({ PostId: post.id, UserId: req.user.id, Message: '좋아요 성공' });
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+});
 
 multiAlbumRouter.patch('/:id/like', isLoggedIn, async (req, res, next) => {
 	try {
 		const post = await db.Post.findOne({
-			where: { id: req.params.id },
+			where: { id: req.body.PostId },
 		});
+		console.log(req.body);
+		console.log('user', req.user.id);
 		if (!post) {
 			return res.status(403).send('게시글이 존재하지 않습니다.');
 		}
