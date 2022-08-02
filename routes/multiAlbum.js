@@ -88,6 +88,11 @@ multiAlbumRouter.get('/:id', isLoggedIn, async (req, res) => {
 					model: db.User,
 					attributes: ['nickname', 'profileImage'],
 				},
+				{
+					model: db.User,
+					as: 'Likers',
+					attributes: ['id'],
+				},
 			],
 		});
 		const fullPost = {
@@ -135,5 +140,35 @@ multiAlbumRouter.post('/uploadMultiAlbumContent', isLoggedIn, async (req, res, n
 		}
 	} catch (err) {
 		console.log(err);
+	}
+});
+
+multiAlbumRouter.patch('/:id/like', isLoggedIn, async (req, res, next) => {
+	try {
+		const post = await db.Post.findOne({
+			where: { id: req.params.id },
+		});
+		if (!post) {
+			return res.status(403).send('게시글이 존재하지 않습니다.');
+		}
+		await post.addLikers(req.user.id);
+		res.json({ PostId: post.id, UserId: req.user.id, Message: '좋아요 성공' });
+	} catch (err) {
+		console.log(err);
+		next(err);
+	}
+});
+multiAlbumRouter.delete('/:id/like', isLoggedIn, async (req, res, next) => {
+	// DELETE /post/1/like
+	try {
+		const post = await db.Post.findOne({ where: { id: req.params.id } });
+		if (!post) {
+			return res.status(403).send('게시글이 존재하지 않습니다.');
+		}
+		await post.removeLikers(req.user.id);
+		res.json({ PostId: post.id, UserId: req.user.id, Message: '좋아요 취소 성공' });
+	} catch (error) {
+		console.error(error);
+		next(error);
 	}
 });
