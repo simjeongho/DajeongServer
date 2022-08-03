@@ -32,11 +32,8 @@ multiAlbumRouter.get('/getList', async (req, res) => {
 });
 
 multiAlbumRouter.get('/getAllList', async (req, res) => {
-	console.log(req);
 	let offset = req.query.offset;
 	let limit = req.query.limit;
-	console.log('req.query는', req.query.limit);
-	console.log('req.path는', req.baseUrl + req.url);
 	const count = await db.Post.count();
 	try {
 		const postList = await db.Post.findAll({
@@ -163,23 +160,35 @@ multiAlbumRouter.get('/:postId/liked', async (req, res, next) => {
 		next(err);
 	}
 });
-multiAlbumRouter.get('/:userId/likes', async (req, res, next) => {
+multiAlbumRouter.get('/likes/:userId', isLoggedIn, async (req, res, next) => {
 	// 유저가 좋아요 누른 포스트
+	let offset = Number(req.query.offset);
+	let limit = Number(req.query.limit);
+	console.log('params!', req.query);
 	try {
 		const user = await db.User.findOne({
 			where: { id: Number(req.params.userId) },
+			attributes: {
+				exclude: ['password', 'updatedAt', 'createdAt', 'email'],
+			},
 			include: [
 				{
 					model: db.Post,
 					as: 'Liked',
 					attributes: ['id', 'title', 'content', 'UserId'],
+					order: [['id', 'DESC']],
 					include: [
 						{
 							model: db.Image,
+							limit: 1,
+							attributes: ['src'],
 						},
 					],
 				},
 			],
+			limit: limit,
+			offset: offset,
+			subQuery: false, // 중요 hasmanybelongTo관계에서 limit과 offset을 가능하게 해줌
 		});
 		console.log('user', req.params.userId);
 		//const userLike = await user.getLiked();
