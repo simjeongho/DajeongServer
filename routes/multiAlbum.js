@@ -20,6 +20,11 @@ multiAlbumRouter.get('/getList', async (req, res) => {
 					model: db.User,
 					attributes: ['nickname', 'profileImage'],
 				},
+				{
+					model: db.User,
+					as: 'Likers',
+					attributes: ['id', 'nickname', 'profileImage'],
+				},
 			],
 		});
 		const multiAlbum = {
@@ -35,6 +40,7 @@ multiAlbumRouter.get('/getAllList', async (req, res) => {
 	let offset = req.query.offset;
 	let limit = req.query.limit;
 	const count = await db.Post.count();
+	console.log(req.header);
 	try {
 		const postList = await db.Post.findAll({
 			order: [['id', 'DESC']],
@@ -63,6 +69,26 @@ multiAlbumRouter.get('/getAllList', async (req, res) => {
 		res.status(200).json(multiAlbum);
 	} catch (err) {
 		console.log(err);
+	}
+});
+multiAlbumRouter.get('/getRecentList', async (req, res) => {
+	try {
+		console.log('recent!', req.route);
+		const recentPost = await db.Post.findAll({
+			order: [['id', 'DESC']],
+			limit: 3,
+			include: [
+				{
+					model: db.Image,
+					limit: 1,
+					attributes: ['src'],
+				},
+			],
+		});
+		res.status(200).json(recentPost);
+	} catch (err) {
+		console.log(err);
+		res.status(401).json({ success: false });
 	}
 });
 
@@ -138,7 +164,7 @@ multiAlbumRouter.post('/uploadMultiAlbumContent', isLoggedIn, async (req, res, n
 		console.log(err);
 	}
 });
-multiAlbumRouter.get('/:postId/liked', async (req, res, next) => {
+multiAlbumRouter.get('/:postId/liked', isLoggedIn, async (req, res, next) => {
 	// 포스트마다 좋아요 누른 사람
 	try {
 		const postLikers = await db.Post.findOne({
@@ -160,22 +186,22 @@ multiAlbumRouter.get('/:postId/liked', async (req, res, next) => {
 		next(err);
 	}
 });
+
 multiAlbumRouter.get('/likes/:userId', isLoggedIn, async (req, res, next) => {
 	// 유저가 좋아요 누른 포스트
-	let offset = Number(req.query.offset);
-	let limit = Number(req.query.limit);
 	console.log('params!', req.query);
 	try {
+		//필요한 거 liked의 개수
 		const user = await db.User.findOne({
 			where: { id: Number(req.params.userId) },
 			attributes: {
 				exclude: ['password', 'updatedAt', 'createdAt', 'email'],
 			},
+			limit: 12,
 			include: [
 				{
 					model: db.Post,
 					as: 'Liked',
-					attributes: ['id', 'title', 'content', 'UserId'],
 					order: [['id', 'DESC']],
 					include: [
 						{
@@ -183,11 +209,13 @@ multiAlbumRouter.get('/likes/:userId', isLoggedIn, async (req, res, next) => {
 							limit: 1,
 							attributes: ['src'],
 						},
+						{
+							model: db.User,
+							attributes: ['profileImage', 'nickname', 'id'],
+						},
 					],
 				},
 			],
-			limit: limit,
-			offset: offset,
 			subQuery: false, // 중요 hasmanybelongTo관계에서 limit과 offset을 가능하게 해줌
 		});
 		console.log('user', req.params.userId);
@@ -208,8 +236,6 @@ multiAlbumRouter.patch('/:id/like', isLoggedIn, async (req, res, next) => {
 		const post = await db.Post.findOne({
 			where: { id: req.body.PostId },
 		});
-		console.log(req.body);
-		console.log('user', req.user.id);
 		if (!post) {
 			return res.status(403).send('게시글이 존재하지 않습니다.');
 		}

@@ -12,6 +12,16 @@ userRouter.get('/', async (req, res, next) => {
 		if (req.user) {
 			const user = await User.findOne({
 				where: { id: req.user.id },
+				include: [
+					{
+						model: db.Post,
+					},
+					{
+						model: db.Post,
+						as: 'Liked',
+						attributes: ['id', 'title'],
+					},
+				],
 			});
 			res.status(200).json(user);
 		} else {
@@ -47,6 +57,11 @@ userRouter.post('/login', (req, res, next) => {
 					},
 					{
 						model: db.Comment,
+					},
+					{
+						model: db.Post,
+						as: 'Liked',
+						attributes: ['id', 'title'],
 					},
 				],
 			});

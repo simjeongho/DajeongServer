@@ -43,7 +43,7 @@ singleAlbumRouter.post('/uploadSingleAlbumPost', isLoggedIn, uploadImage.single(
 	}
 });
 
-singleAlbumRouter.get('/getList', isLoggedIn, (req, res, next) => {
+singleAlbumRouter.get('/getList', (req, res, next) => {
 	SingleAlbum.find()
 		.exec()
 		.then((doc) => {

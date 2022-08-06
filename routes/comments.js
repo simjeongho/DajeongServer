@@ -1,14 +1,13 @@
 import express from 'express';
 import { isLoggedIn } from './middlewares.js';
 import db from '../models/index.js';
-import e from 'express';
 
 export const commentRouter = express.Router();
 
 commentRouter.post('/multiAlbum/:id', isLoggedIn, async (req, res) => {
 	console.log('commentsss', req.body);
 	try {
-		const comment = await db.Comment.create({
+		await db.Comment.create({
 			UserId: req.body.userId,
 			PostId: req.params.id,
 			content: req.body.content,
@@ -16,6 +15,7 @@ commentRouter.post('/multiAlbum/:id', isLoggedIn, async (req, res) => {
 		res.status(200).json({ success: true });
 	} catch (err) {
 		console.log(err);
+		res.statur(403).json({ success: false });
 	}
 });
 
@@ -46,6 +46,7 @@ commentRouter.delete('/multiAlbum/delete/:id', isLoggedIn, async (req, res) => {
 	if (req.body.UserId === req.body.creatorId) {
 		try {
 			await db.Comment.destroy({ where: { id: req.body.id } });
+			res.status(200).json({ success: true, message: '댓글이 삭제 되었습니다.' });
 		} catch (err) {
 			console.log('error occur! while delete comment');
 		}
